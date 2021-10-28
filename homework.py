@@ -59,8 +59,7 @@ def get_api_answer(url, current_timestamp):
     except Exception as error:
         message = f'Эндпоинт {url} недоступен. {error}'
         raise ConnectionResetError(message, 'ERROR')
-    else:
-        return response.json()
+    return response.json()
 
 
 def parse_status(homework):
