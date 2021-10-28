@@ -48,16 +48,12 @@ def get_api_answer(url, current_timestamp):
     logging.info('Отправляем запрос к API домашки.')
     if current_timestamp is None:
         current_timestamp = payload
-    try:
-        response = requests.get(url=ENDPOINT, headers=headers,
-                                params={'from_date': current_timestamp})
-        status_code = response.status_code
+    response = requests.get(url=ENDPOINT, headers=headers,
+                            params={'from_date': current_timestamp})
+    status_code = response.status_code
 
-        if status_code != HTTPStatus.OK:
-            message = f'Эндпоинт {url} недоступен. Код ответа: {status_code}'
-            raise ConnectionResetError(message, 'ERROR')
-    except Exception as error:
-        message = f'Эндпоинт {url} недоступен. {error}'
+    if status_code != HTTPStatus.OK:
+        message = f'Эндпоинт {url} недоступен. Код ответа: {status_code}'
         raise ConnectionResetError(message, 'ERROR')
     return response.json()
 
