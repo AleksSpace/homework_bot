@@ -1,10 +1,10 @@
 import logging
 import os
-import requests
-from dotenv import load_dotenv
-import telegram
 import time
 from http import HTTPStatus
+
+import requests
+import telegram
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -33,7 +33,7 @@ HOMEWORK_STATUSES = {
 
 
 def send_message(bot, message):
-    ''' Метод отправляет сообщение в Телеграм '''
+    """Метод отправляет сообщение в Телеграм."""
     logging.info('Отправляем сообщение в Телеграм.')
     try:
         bot = telegram.Bot(token=TELEGRAM_TOKEN)
@@ -44,14 +44,13 @@ def send_message(bot, message):
 
 
 def get_api_answer(url, current_timestamp):
-    ''' Метод отправляет запрос к API домашки на эндпоинт '''
+    """Метод отправляет запрос к API домашки на эндпоинт."""
     logging.info('Отправляем запрос к API домашки.')
     if current_timestamp is None:
         current_timestamp = payload
     try:
         response = requests.get(url=ENDPOINT, headers=headers,
-                                         params={
-                                             'from_date': current_timestamp})
+                                params={'from_date': current_timestamp})
         status_code = response.status_code
 
         if status_code != HTTPStatus.OK:
@@ -62,11 +61,10 @@ def get_api_answer(url, current_timestamp):
         raise ConnectionResetError(message, 'ERROR')
     else:
         return response.json()
-    
 
 
 def parse_status(homework):
-    ''' Метод проверяет статус проверки ДЗ. '''
+    """Метод проверяет статус проверки ДЗ."""
     logging.info('Проверяем статус ДЗ.')
     homework_name = homework.get('homework_name')
     if homework_name is None:
@@ -80,7 +78,7 @@ def parse_status(homework):
         if status == 'reviewing':
             verdict = HOMEWORK_STATUSES['reviewing']
         if status == 'rejected':
-            verdict = HOMEWORK_STATUSES['rejected'] 
+            verdict = HOMEWORK_STATUSES['rejected']
         if status == 'approved':
             verdict = HOMEWORK_STATUSES['approved']
     else:
@@ -91,9 +89,9 @@ def parse_status(homework):
 
 
 def check_response(response):
-    ''' Метод проверяет полученный ответ на корректность;
-        проверяет, не изменился ли статус
-    '''
+    """Метод проверяет полученный ответ на корректность.
+    Проверяет, не изменился ли статус
+    """
     logging.info('Проверяем ответ от сервера.')
     homeworks = response.get('homeworks')
     if homeworks is None:
@@ -103,18 +101,19 @@ def check_response(response):
     homework = response.get('homeworks')[0]
     verdict = HOMEWORK_STATUSES.get(homework.get('status'))
     if verdict is None:
-        raise AssertionError ('Убедитесь, что функция check_response'
-                              'правильно работает при недокументированном'
-                              'статусе домашней работы в ответе от API')
+        raise AssertionError('Убедитесь, что функция check_response'
+                             'правильно работает при недокументированном'
+                             'статусе домашней работы в ответе от API')
 
     return parse_status(homeworks[0])
+
 
 def main():
     """Запуск бота."""
     logging.debug('Запуск бота.')
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
     current_timestamp = int(time.time())
-    url=ENDPOINT
+    url = ENDPOINT
     while True:
         try:
             new_homework = get_api_answer(url, current_timestamp)
