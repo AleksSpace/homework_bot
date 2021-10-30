@@ -72,7 +72,8 @@ def parse_status(homework):
     homework_name = homework.get('homework_name')
     if homework_name is None:
         logger.error('Не удалось получить данные дз, homework_name is None')
-        raise ValueError('Не удалось получить данные дз, homework_name is None')
+        raise ValueError('Не удалось получить данные дз,'
+                         'homework_name is None')
     status = homework.get('status')
     if status is None:
         logger.error('Не удалось получить данные дз, status is None')
