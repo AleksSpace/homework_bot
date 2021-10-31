@@ -30,6 +30,8 @@ RETRY_TIME = 300
 ENDPOINT = 'https://practicum.yandex.ru/api/user_api/homework_statuses/'
 
 HEADERS = {'Authorization': f'OAuth {PRACTICUM_TOKEN}'}
+STATUS_CHANGE = ('Изменился статус проверки работы "{homework_name}". '
+                 '{verdict}')
 
 VERDICTS = {
     'approved': 'Работа проверена: ревьюеру всё понравилось. Ура!',
@@ -83,8 +85,7 @@ def parse_status(homework):
     else:
         logger.error(f'Неизвестный статус - {status}')
         return f'Неизвестный статус - {status}'
-
-    return VERDICTS.format(homework_name=homework_name, verdict=verdict)
+    return STATUS_CHANGE.format(homework_name=homework_name, verdict=verdict)
 
 
 def check_response(response):
