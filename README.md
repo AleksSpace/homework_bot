@@ -44,5 +44,5 @@ python manage.py migrate
 ```
 Запустить проект при помощи команты в терминале:
 ```
-python 
+python homework.py
 ```
